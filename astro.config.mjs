@@ -50,9 +50,9 @@ export default defineConfig({
       includeAssets: ["favicon.svg"],
       registerType: "autoUpdate",
       manifest: {
-        name: "ChatGPT",
+        name: "IT 自助服务平台",
         lang: "zh-cn",
-        short_name: "ChatGPT",
+        short_name: "IT 服务",
         background_color: "#f6f8fa",
         icons: [
           {
