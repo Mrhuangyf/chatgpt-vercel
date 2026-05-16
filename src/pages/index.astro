@@ -1,52 +1,193 @@
 ---
 import Layout from "~/layouts/Layout.astro"
-import Header from "~/components/Header.astro"
-import Chat from "~/components/Chat"
 import "~/styles/global.css"
 import "@unocss/reset/tailwind.css"
-import "katex/dist/katex.min.css"
-import "highlight.js/styles/atom-one-dark.css"
-import {
-  defaultMessage,
-  defaultResetContinuousDialogue,
-  defaultSetting
-} from "~/system"
-import { parsePrompts } from "~/utils/parse"
-const prompts = parsePrompts()
-const message = import.meta.env.DEFAULT_MESSAGE || defaultMessage
-let setting = defaultSetting
-if (import.meta.env.DEFAULT_SETTING) {
-  try {
-    setting = {
-      ...setting,
-      ...JSON.parse(import.meta.env.DEFAULT_SETTING)
-    }
-  } catch (e) {
-    console.error("Error parsing DEFAULT_SETTING:", e)
+
+const quickLinks = [
+  { label: "Outlook 邮件配置", href: "#tutorials" },
+  { label: "网盘映射", href: "#tutorials" },
+  { label: "打印机连接", href: "#tutorials" },
+  { label: "软件下载", href: "#downloads" }
+]
+
+const tutorials = [
+  {
+    title: "Outlook 邮件配置",
+    description:
+      "适用于新电脑、重装系统或新入职员工，包含账号登录、签名设置、缓存模式与常见收发问题排查。",
+    time: "约 8 分钟",
+    tags: ["邮箱", "新员工", "Office"]
+  },
+  {
+    title: "公司网盘映射",
+    description:
+      "按照部门权限连接共享盘，说明 Windows 资源管理器映射方式、断线重连与权限申请流程。",
+    time: "约 6 分钟",
+    tags: ["共享盘", "权限", "Windows"]
+  },
+  {
+    title: "打印机安装与打印",
+    description:
+      "覆盖打印机查找、驱动安装、默认打印机设置、双面打印与卡纸/队列清理等基础操作。",
+    time: "约 5 分钟",
+    tags: ["打印机", "驱动", "办公"]
+  },
+  {
+    title: "VPN 与远程办公",
+    description:
+      "帮助员工在外出或居家场景中安全访问公司系统，包含连接步骤和常见错误码说明。",
+    time: "约 7 分钟",
+    tags: ["VPN", "远程", "安全"]
   }
-}
+]
 
-const _ = import.meta.env.RESET_CONTINUOUS_DIALOGUE_OPTION
-const resetContinuousDialogue =
-  _ && _ !== String(defaultResetContinuousDialogue)
-    ? !defaultResetContinuousDialogue
-    : defaultResetContinuousDialogue
+const downloads = [
+  {
+    name: "常用办公软件包",
+    meta: "Office 插件、压缩工具、PDF 阅读器",
+    action: "下载软件"
+  },
+  {
+    name: "打印机驱动合集",
+    meta: "按楼层/型号整理，支持快速检索",
+    action: "下载驱动"
+  },
+  {
+    name: "新员工入职手册",
+    meta: "账号、邮箱、网络、会议室使用说明",
+    action: "下载手册"
+  }
+]
 
-const question = Astro.url.searchParams.get("q")
+const faqItems = [
+  "无法连接 Wi-Fi 或网线没有网络",
+  "Outlook 一直提示输入密码",
+  "共享盘提示没有访问权限",
+  "打印任务卡住或无法取消",
+  "电脑运行缓慢、磁盘空间不足"
+]
 ---
 
-<Layout title="ChatGPT">
-  <main class="before sm:pt-8em py-2em">
-    <Header />
-    <Chat
-      env={{
-        setting,
-        message,
-        resetContinuousDialogue
-      }}
-      question={question ?? undefined}
-      prompts={prompts}
-      client:visible
-    />
+<Layout title="IT 自助服务平台">
+  <main class="service-page">
+    <section class="hero">
+      <nav class="topbar" aria-label="IT 自助服务导航">
+        <a class="brand" href="/" aria-label="IT 自助服务平台首页">
+          <span class="brand-mark">IT</span>
+          <span>
+            <strong>IT 自助服务平台</strong>
+            <small>教程 · 下载 · 故障自查</small>
+          </span>
+        </a>
+        <div class="nav-links">
+          <a href="#tutorials">教程中心</a>
+          <a href="#downloads">资源下载</a>
+          <a href="#support">联系支持</a>
+        </div>
+      </nav>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">面向员工的一站式 IT 帮助中心</p>
+          <h1>把常见电脑问题做成在线指南，让员工先自助解决。</h1>
+          <p class="hero-text">
+            集中展示 Outlook 邮件配置、网盘映射、打印机安装、新员工入职指引、
+            软件下载和驱动资源，减少重复答疑，让桌面运维更高效。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#tutorials">查看教程</a>
+            <a class="secondary-button" href="#downloads">下载资源</a>
+          </div>
+        </div>
+
+        <aside class="search-card" aria-labelledby="search-title">
+          <p id="search-title" class="card-label">快速查找</p>
+          <div class="search-box">输入关键词，例如“Outlook”或“打印机”</div>
+          <div class="quick-links">
+            {quickLinks.map((item) => <a href={item.href}>{item.label}</a>)}
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="平台能力概览">
+      <div>
+        <strong>4 类</strong>
+        <span>高频办公场景</span>
+      </div>
+      <div>
+        <strong>3 步</strong>
+        <span>自助排查流程</span>
+      </div>
+      <div>
+        <strong>24h</strong>
+        <span>资源随时访问</span>
+      </div>
+    </section>
+
+    <section id="tutorials" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Tutorials</p>
+        <h2>常用教程手册</h2>
+        <p>按员工最常遇到的问题整理，适合新入职、换电脑、远程办公等场景。</p>
+      </div>
+      <div class="tutorial-grid">
+        {
+          tutorials.map((tutorial) => (
+            <article class="tutorial-card">
+              <div class="card-topline">
+                <span>{tutorial.time}</span>
+                <span>图文教程</span>
+              </div>
+              <h3>{tutorial.title}</h3>
+              <p>{tutorial.description}</p>
+              <div class="tag-row">
+                {tutorial.tags.map((tag) => <span>{tag}</span>)}
+              </div>
+              <a href="#support" aria-label={`查看 ${tutorial.title} 教程`}>
+                查看详情 →
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section id="downloads" class="content-section split-section">
+      <div class="section-heading">
+        <p class="eyebrow">Downloads</p>
+        <h2>软件、驱动与文档下载</h2>
+        <p>
+          后续可将按钮链接到公司网盘、对象存储或内部下载服务器，并按版本号统一维护。
+        </p>
+      </div>
+      <div class="download-list">
+        {
+          downloads.map((item) => (
+            <article class="download-item">
+              <div>
+                <h3>{item.name}</h3>
+                <p>{item.meta}</p>
+              </div>
+              <a href="#support">{item.action}</a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="content-section support-panel" id="support">
+      <div>
+        <p class="eyebrow">Self-check</p>
+        <h2>提交工单前先自查</h2>
+        <p>
+          当员工无法通过教程解决时，可以引导其准备截图、电脑名、报错信息和影响范围，
+          再联系 IT 支持，减少来回沟通时间。
+        </p>
+      </div>
+      <ul class="faq-list">
+        {faqItems.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
   </main>
 </Layout>
